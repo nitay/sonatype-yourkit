@@ -1,0 +1,24 @@
+ <project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.facebook.thirdparty.yourkit-api</groupId>
+  <artifactId>yjp-controller-api-redist</artifactId>
+  <packaging>jar</packaging>
+  <name>${project.artifactId}</name>
+  <version>12.0.3</version>
+  <url>http://www.yourkit.com/</url>
+  <licenses>
+    <license>
+      <name>BSD 3 Clause License</name>
+      <url>http://opensource.org/licenses/BSD-3-Clause</url>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/nitay/sonatype-yourkit</url>
+    <connection>git://github.com/nitay/sonatype-yourkit.git</connection>
+  </scm>
+  <developers>
+    <developer>
+    </developer>
+  </developers>
+  <dependencies></dependencies>
+</project>
