@@ -4,12 +4,13 @@
   <artifactId>yjp-controller-api-redist</artifactId>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
+  <description>YourKit Profiler API</description>
   <version>12.0.3</version>
   <url>http://www.yourkit.com/</url>
   <licenses>
     <license>
       <name>BSD 3 Clause License</name>
-      <url>http://opensource.org/licenses/BSD-3-Clause</url>
+      <url>https://github.com/nitay/sonatype-yourkit/blob/master/12.0.3/license-redist.txt</url>
     </license>
   </licenses>
   <scm>
