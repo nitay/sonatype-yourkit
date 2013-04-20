@@ -41,8 +41,8 @@ We welcome you to use it in other projects as well.
 
 Keeping with the example previously, if you have added version 11.0.10, you would run:
 
-    cd 11.0.10
-    ../mvn-sonatype-stage.sh -a yjp-controller-api-redist -v 11.0.10
+    $ cd 11.0.10
+    $ ../mvn-sonatype-stage.sh -a yjp-controller-api-redist -v 11.0.10
 
 ## Step 3: Release Staged Artifact ##
 This step has to be done by hand.
