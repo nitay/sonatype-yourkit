@@ -3,8 +3,12 @@
 require 'fileutils'
 
 def cp(src, dest)
-  puts "cp #{src} #{dest}"
-  FileUtils.cp(src, dest)
+  if File.readable?(src)
+    puts "cp #{src} #{dest}"
+    FileUtils.cp(src, dest)
+  else
+    puts "ERROR: Cannot read #{src}, will not copy to #{dest}"
+  end
 end
 
 def dir_entries(dir)
@@ -13,17 +17,18 @@ end
 
 def parse_version(dir)
   File.basename(dir)
-  REGEXES.each do |regex|
+  DIR_REGEXES.each do |regex|
     match = regex.match(dir)
     return match[1] if match
   end
   nil
 end
 
-REGEXES = [
+DIR_REGEXES = [
   /yjp-([0-9]+\.[0-9]+\.[0-9]+)/,
   /YourKit_Java_Profiler_([0-9]+\.[0-9]+\.[0-9]+)\.app/,
 ]
+LIB_REGEX = /.*\.(so|dll|jnilib)$/
 
 BASE_NAME = 'yjp-controller-api-redist'
 
@@ -45,13 +50,12 @@ dir_entries(bin_dir).each do |platform|
   path = bin_dir + platform
   next unless File.directory?(path)
 
-  libs = dir_entries(path)
-  raise "ERROR: Unexpected # of libs in #{bin_dir}: #{libs}" if libs.size != 1
+  dir_entries(path).each do |lib|
+    next unless LIB_REGEX.match(lib)
+    lib_name,ext_name = lib.split('.')
 
-  lib = libs.first
-  lib_name,ext_name = lib.split('.')
-
-  cp(path + '/' + libs.first, target_dir + '/' + lib_name + '-' + platform + '-' + version + '.' + ext_name)
+    cp(path + '/' + lib, target_dir + '/' + lib_name + '-' + platform + '-' + version + '.' + ext_name)
+  end
 end
 
 cp(dir + "/lib/#{BASE_NAME}.jar", target_dir + "/#{BASE_NAME}-#{version}.jar")
