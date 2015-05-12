@@ -19,21 +19,21 @@ def parse_version(dir)
   File.basename(dir)
   DIR_REGEXES.each do |regex|
     match = regex.match(dir)
-    return match[1] if match
+    return match[1].to_i.to_s + "." + match[2].to_i.to_s + ".0" if match
   end
   nil
 end
 
 DIR_REGEXES = [
-  /yjp-([0-9]+\.[0-9]+\.[0-9]+)/,
-  /YourKit_Java_Profiler_([0-9]+\.[0-9]+\.[0-9]+)\.app/,
+  /yjp-[0-9]{4,4}-build-([0-9]{2,2})([0-9]{3,3})/,
+  /YourKit_Java_Profiler_[0-9]{4,4}_build_([0-9]{2,2})([0-9]{3,3})\.app/,
 ]
 LIB_REGEX = /.*\.(so|dll|jnilib)$/
 
 BASE_NAME = 'yjp-controller-api-redist'
 
 if ARGV.empty?
-  puts "Usage: #{__FILE__} < yjp-x.y.z/ OR YourKit_Java_Profiler_x.y.z.app/ > [output_directory]"
+  puts "Usage: #{__FILE__} < yjp-20nn-build-xxyyy/ OR YourKit_Java_Profiler_20nn_build_xxyyy.app/ > [output_directory]"
   exit
 end
 
@@ -44,7 +44,13 @@ raise "ERROR: Could not parse version from #{dir}" unless version
 target_dir = ARGV.shift || './' + version
 Dir.mkdir(target_dir) unless File.directory?(target_dir)
 
-bin_dir = dir + '/bin/'
+prefix = ''
+if RbConfig::CONFIG['host_os'] =~ /(darwin|mac os)/
+  prefix = '/Contents/Resources'
+end
+
+
+bin_dir = dir + prefix + '/bin/'
 dir_entries(bin_dir).each do |platform|
   next if ['.', '..'].include?(platform)
   path = bin_dir + platform
@@ -58,8 +64,8 @@ dir_entries(bin_dir).each do |platform|
   end
 end
 
-cp(dir + "/lib/#{BASE_NAME}.jar", target_dir + "/#{BASE_NAME}-#{version}.jar")
-cp(dir + "/license-redist.txt", target_dir)
+cp(dir + prefix + "/lib/#{BASE_NAME}.jar", target_dir + "/#{BASE_NAME}-#{version}.jar")
+cp(dir + prefix + "/license-redist.txt", target_dir)
 
 system("jar -cf #{target_dir}/#{BASE_NAME}-#{version}-sources.jar -C template README")
 system("jar -cf #{target_dir}/#{BASE_NAME}-#{version}-javadoc.jar -C template README")
